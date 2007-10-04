@@ -1,0 +1,33 @@
+#
+# Makefile for the Atheros WLAN driver.
+#
+
+obj ?= .
+src ?= .
+srctree ?= .
+
+TOP = $(srctree)/$(src)/..
+
+include $(TOP)/BuildCaps.inc
+
+HAL=	$(TOP)/openhal
+COMPAT=	$(TOP)/include
+
+#
+# Select bus-specific code.  Note that this defaults to PCI.
+#
+ifeq ($(strip $(BUS)),AHB)
+BUSNAME=ahb
+EXTRA_CFLAGS+= -DATH_AHB
+else
+BUSNAME=pci
+EXTRA_CFLAGS+= -DATH_PCI
+endif
+
+INCS = -include $(COMPAT)/compat.h -I$(COMPAT)
+INCS += -I$(TOP) -I$(HAL)
+
+EXTRA_CFLAGS += $(INCS) $(COPTS)
+
+obj-$(CONFIG_ATHEROS)	+= ath_$(BUSNAME).o
+ath_$(BUSNAME)-objs	:= if_ath.o if_ath_d80211.o if_ath_$(BUSNAME).o

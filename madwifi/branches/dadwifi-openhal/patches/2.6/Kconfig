@@ -1,0 +1,9 @@
+config ATHEROS
+	tristate "Atheros 802.11(a/b/g) PCI/CardBus support"
+	depends on PCI && MAC80211 && WLAN_80211
+       ---help---
+	  Say Y here to enable support for Atheros based CardBus and PCI
+	  wireless cards.  To compile this driver as a module, choose M
+	  here: the main module will be called ath_pci.
+
+	  If unsure, say N.

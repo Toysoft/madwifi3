@@ -1,0 +1,122 @@
+                DadWifi (mac80211 Atheros Driver for WiFi)
+
+
+
+* Introduction
+
+DadWifi is a port of the MadWifi driver to the mac80211 wireless
+networking stack.  The mac80211 stack is the next generation 802.11
+stack for Linux.  DadWifi uses the device support layer from MadWifi
+(the 'ath' layer) and ties it to the mac80211 stack.  That is, where
+MadWifi uses the BSD-based net80211 stack, DadWifi uses the Linux
+mac80211 stack.  DadWifi reuses a large amount of code from MadWifi.
+
+
+* Status
+
+This driver is in the early stages of development so should be
+considered unstable.  Do not use it for applications where you cannot
+tolerate an occasional crash or loss in connectivity. 
+
+What is working:
+
+- station (client) mode
+- monitor (wireless sniffer) mode
+- ap mode
+
+See the 'Development' section below for details on what is still being
+worked on.
+
+
+* Obtaining DadWifi
+
+To obtain the latest DadWifi development tree via anonymous subversion:
+
+svn co http://svn.madwifi.org/branches/dadwifi
+
+
+* Using DadWifi
+
+This driver requires a recent wireless-dev git development tree.  We
+track changes in John Linville's tree.  To clone John Linville's tree
+using Cogito: 
+
+cg-clone git://git.kernel.org/pub/scm/linux/kernel/git/linville/wireless-dev.git
+
+Build, install and boot that kernel. Be sure to enable the mac80211
+wireless stack, CONFIG_MAC80211.
+
+The dadwifi source can then be built by simply invoking make:
+
+$ make
+
+to install it (as root):
+
+# make install
+# modprobe rc80211_simple
+# modprobe ath_pci
+
+For monitor mode use iwconfig to configure the interface, for example:
+
+# iwconfig wlan0 mode monitor
+# ifconfig wlan0 up
+# iwconfig wlan0 channel 6
+
+Then point your sniffer (tcpdump, wireshark, tshark etc.) at the
+interface, for example:
+
+# tshark -xV -i wlan0
+
+For station mode it is recommended to use wpa_supplicant and the
+wireless extensions driver, i.e.:
+
+# wpa_supplicant -dd -Dwext -i wlan0 -c wpa_supplicant.conf
+
+For AP mode a recent hostapd development snapshot is required. 
+hostapd-0.5.5 is known to work.  You must configure hostapd to include
+the Devicescape driver. In hostapd's build configuration (.config) add
+the following lines (adjust to match the location of your wireless-dev
+tree):
+
+CONFIG_DRIVER_DEVICESCAPE=y
+WIRELESS_DEV=/usr/src/wireless-dev
+CFLAGS += -I$(WIRELESS_DEV)/include
+CFLAGS += -I$(WIRELESS_DEV)/net/mac80211
+CFLAGS += -D_LINUX_TYPES_H
+
+* Development
+
+See the madwifi ticket system for open tickets in the 'dadwifi'
+component.
+
+We would gradually like to get known issues and tasks out of this file
+and into the ticket system.  Here is a list of tasks which are still to
+be completed which are not reflected in the ticket system:
+
+  - We need to put logic into add_interface which prohibit unsupported
+    configurations.
+
+  - multicast: The multicast filter is currently disabled.
+
+  - skb fragments: The driver currently does not support fragmented
+    skb's.  See the 'fraglist' member in struct ieee80211_hw for
+    details.  We should support more than one skb per frame.
+
+  - Turbo modes: hostapd does not currently support turbo modes for the
+    Devicescape stack.  Turbo modes are disabled in dadwifi until that
+    is fixed.
+
+  - tx power control: tx power control handling needs to be looked at.
+    I don't know what the unit is for the power argument to
+    ath_hal_setuptxdesc().
+
+Here is a list of features which are currently on hold:
+
+  - multicast frame key search: See sc->sc_mcastkey, etc.  I disabled
+    this for now since I am unsure what to do about it.
+
+Here is a list of features which we do not plan on working on:
+
+  - Super G, super G fast frames, super G compression, dynamic turbo and
+    XR: This are all Atheros-specific and for the most part the same
+    functionality will be available once we have 802.11n support.  

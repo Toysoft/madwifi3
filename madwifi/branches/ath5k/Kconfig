@@ -1,0 +1,12 @@
+comment "Atheros 5xxx series 802.11(a/b/g) PCI/Cardbus support"
+
+config ATH5K
+	tristate "Atheros 5xxx PCI/Cardbus cards"
+	depends on PCI && MAC80211 && WLAN_80211 && EXPERIMENTAL
+	---help---
+	  Say Y here if you intend to attach an Atheros 5xxx 
+	  series Cardbus or PCI wireless Ethernet networking card to 
+	  your computer. This driver uses mac80211 stack.
+
+	  To compile this driver as a module, choose M here: the module will be
+	  called ath5k.  If unsure, say M.

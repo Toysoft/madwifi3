@@ -1,0 +1,33 @@
+#
+# Makefile for AMRR (Adaptive Multi Rate Retry) control algorithm.
+#
+# $Id$
+#
+
+src ?= .
+srctree ?= .
+
+TOP = $(srctree)/$(src)/../..
+
+ATH=	$(TOP)/ath
+COMPAT=	$(TOP)/include
+HAL=	$(TOP)/openhal
+
+INCS = -include $(COMPAT)/compat.h -I$(COMPAT)
+INCS += -I$(TOP) -I$(ATH) -I$(HAL)
+EXTRA_CFLAGS += $(INCS)
+
+ifneq ($(VERSION).$(PATCHLEVEL),2.4)
+obj-$(CONFIG_ATHEROS) += ath_rate_amrr.o
+ath_rate_amrr-objs	:= amrr.o
+endif
+
+ifeq ($(VERSION).$(PATCHLEVEL),2.4)
+obj-$(CONFIG_ATHEROS) := amrr.o
+
+export-objs	:= amrr.o
+list-multi	:= ath_rate_amrr.o
+
+O_TARGET	:= ath_rate.o
+include $(TOPDIR)/Rules.make
+endif
