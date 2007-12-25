@@ -314,6 +314,9 @@ ieee80211_ifattach(struct ieee80211com *ic)
 	/* Enable marking of dfs by default */
 	ic->ic_flags_ext |= IEEE80211_FEXT_MARKDFS;
 
+	/* Enable ANI by default */
+	ic->ic_flags_ext |= IEEE80211_FEXT_ANI;
+
 	/*
 	 * Enable WME by default if we're capable.
 	 */

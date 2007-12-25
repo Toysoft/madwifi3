@@ -599,6 +599,7 @@ enum {
 	IEEE80211_PARAM_REGCLASS	= 59,	/* enable regclass ids in country IE */
 	IEEE80211_PARAM_DROPUNENC_EAPOL	= 60,	/* drop unencrypted eapol frames */
  	IEEE80211_PARAM_SHPREAMBLE	= 61,	/* Short Preamble */
+	IEEE80211_PARAM_ANI		= 62,	/* Interference Mitigation (ANI) */
 };
 
 #define	SIOCG80211STATS			(SIOCDEVPRIVATE+2)
