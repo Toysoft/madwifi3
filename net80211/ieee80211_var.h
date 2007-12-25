@@ -473,7 +473,6 @@ MALLOC_DECLARE(M_80211_VAP);
 #define IEEE80211_FEXT_SWBMISS 0x00000400	/* CONF: use software beacon timer */
 #define IEEE80211_FEXT_DROPUNENC_EAPOL 0x00000800      /* CONF: drop unencrypted eapol frames */
 #define IEEE80211_FEXT_APPIE_UPDATE 0x00001000	/* STATE: beacon APP IE updated */
-#define IEEE80211_FEXT_ANI	0x00002000	/* CONF: enable ANI */
 
 #define IEEE80211_COM_UAPSD_ENABLE(_ic)		((_ic)->ic_flags_ext |= IEEE80211_FEXT_UAPSD)
 #define IEEE80211_COM_UAPSD_DISABLE(_ic)	((_ic)->ic_flags_ext &= ~IEEE80211_FEXT_UAPSD)

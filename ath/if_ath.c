@@ -1913,8 +1913,7 @@ ath_init(struct net_device *dev)
 		ath_hal_gpioCfgOutput(ah, sc->sc_ledpin);
 
 	/* Turn off Interference Mitigation in non-STA modes */
-	if ((sc->sc_opmode != HAL_M_STA) && sc->sc_hasintmit &&
-	    (ic->ic_flags_ext & IEEE80211_FEXT_ANI) == 0)
+	if ((sc->sc_opmode != HAL_M_STA) && sc->sc_hasintmit)
 		ath_hal_setintmit(ah, 0);
 
 	/*
@@ -2169,8 +2168,7 @@ ath_reset(struct net_device *dev)
 			dev->name, __func__, ath_get_hal_status_desc(status), status);
 
 	/* Turn off Interference Mitigation in non-STA modes */
-	if ((sc->sc_opmode != HAL_M_STA) && sc->sc_hasintmit &&
-	    (ic->ic_flags_ext & IEEE80211_FEXT_ANI) == 0)
+	if ((sc->sc_opmode != HAL_M_STA) && sc->sc_hasintmit)
 		ath_hal_setintmit(ah, 0);
 
 	ath_update_txpow(sc);		/* update tx power state */
@@ -7833,9 +7831,8 @@ ath_chan_set(struct ath_softc *sc, struct ieee80211_channel *chan)
 			ath_hal_gpioCfgOutput(ah, sc->sc_ledpin);
 		
 		/* Turn off Interference Mitigation in non-STA modes */
-		if ((sc->sc_opmode != HAL_M_STA) && sc->sc_hasintmit &&
-		    (ic->ic_flags_ext & IEEE80211_FEXT_ANI) == 0)
-			ath_hal_setintmit(ah, 0);
+		if ((sc->sc_opmode != HAL_M_STA) && sc->sc_hasintmit)
+		ath_hal_setintmit(ah, 0);
 
 		sc->sc_curchan = hchan;
 		ath_update_txpow(sc);		/* update tx power state */
