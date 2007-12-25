@@ -2546,6 +2546,13 @@ ieee80211_ioctl_setparam(struct net_device *dev, struct iw_request_info *info,
 		else
 			ic->ic_flags_ext &= ~IEEE80211_FEXT_MARKDFS;
 		break;
+	case IEEE80211_PARAM_ANI:
+		if (value)
+			ic->ic_flags_ext |= IEEE80211_FEXT_ANI;
+		else
+			ic->ic_flags_ext &= ~IEEE80211_FEXT_ANI;
+		retv = ENETRESET;
+		break;
 	default:
 		retv = EOPNOTSUPP;
 		break;
@@ -2837,6 +2844,9 @@ ieee80211_ioctl_getparam(struct net_device *dev, struct iw_request_info *info,
 			param[0] = 1;
 		else
 			param[0] = 0;
+		break;
+	case IEEE80211_PARAM_ANI:
+		param[0] = (ic->ic_flags_ext & IEEE80211_FEXT_ANI) != 0;
 		break;
 	default:
 		return -EOPNOTSUPP;
@@ -5165,6 +5175,10 @@ static const struct iw_priv_args ieee80211_priv_args[] = {
 	  0, IW_PRIV_TYPE_APPIEBUF, "getiebuf" },
 	{ IEEE80211_IOCTL_FILTERFRAME,
 	  IW_PRIV_TYPE_FILTER , 0, "setfilter" },
+	{ IEEE80211_PARAM_ANI,
+	  IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, 0, "ani" },
+	{ IEEE80211_PARAM_ANI,
+	  0, IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, "get_ani" },
 
 #endif /* WIRELESS_EXT >= 12 */
 };
