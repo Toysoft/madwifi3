@@ -833,7 +833,8 @@ ath_attach(u_int16_t devid, struct net_device *dev, HAL_BUS_TAG tag)
         * for OFDM rates when we are in non-STA modes. We will turn this
         * capability off in non-STA VAPs
         */
-       sc->sc_hasintmit = ath_hal_hasintmit(ah);
+	sc->sc_hasintmit = ath_hal_hasintmit(ah);
+	sc->sc_useintmit = 1;
 
 	/* get mac address from hardware */
 	ath_hal_getmac(ah, ic->ic_myaddr);
@@ -1913,8 +1914,11 @@ ath_init(struct net_device *dev)
 		ath_hal_gpioCfgOutput(ah, sc->sc_ledpin);
 
 	/* Turn off Interference Mitigation in non-STA modes */
-	if ((sc->sc_opmode != HAL_M_STA) && sc->sc_hasintmit)
+	if ((sc->sc_opmode != HAL_M_STA) && sc->sc_hasintmit && !sc->sc_useintmit) {
+		DPRINTF(sc, ATH_DEBUG_RESET,
+			"%s: disabling interference mitigation (ANI)\n", __func__);
 		ath_hal_setintmit(ah, 0);
+	}
 
 	/*
 	 * This is needed only to setup initial state
@@ -2168,8 +2172,11 @@ ath_reset(struct net_device *dev)
 			dev->name, __func__, ath_get_hal_status_desc(status), status);
 
 	/* Turn off Interference Mitigation in non-STA modes */
-	if ((sc->sc_opmode != HAL_M_STA) && sc->sc_hasintmit)
+	if ((sc->sc_opmode != HAL_M_STA) && sc->sc_hasintmit && !sc->sc_useintmit) {
+		DPRINTF(sc, ATH_DEBUG_RESET,
+			"%s: disabling interference mitigation (ANI)\n", __func__);
 		ath_hal_setintmit(ah, 0);
+	}
 
 	ath_update_txpow(sc);		/* update tx power state */
 	if (ath_startrecv(sc) != 0)	/* restart recv */
@@ -7831,9 +7838,11 @@ ath_chan_set(struct ath_softc *sc, struct ieee80211_channel *chan)
 			ath_hal_gpioCfgOutput(ah, sc->sc_ledpin);
 		
 		/* Turn off Interference Mitigation in non-STA modes */
-		if ((sc->sc_opmode != HAL_M_STA) && sc->sc_hasintmit)
-		ath_hal_setintmit(ah, 0);
-
+		if ((sc->sc_opmode != HAL_M_STA) && sc->sc_hasintmit && !sc->sc_useintmit) {
+			DPRINTF(sc, ATH_DEBUG_RESET,
+				"%s: disabling interference mitigation (ANI)\n", __func__);
+			ath_hal_setintmit(ah, 0);
+		}
 		sc->sc_curchan = hchan;
 		ath_update_txpow(sc);		/* update tx power state */
 
@@ -9311,7 +9320,8 @@ enum {
 	ATH_TKIPMIC		= 19,
 	ATH_XR_POLL_PERIOD 	= 20,
 	ATH_XR_POLL_COUNT 	= 21,
-	ATH_ACKRATE             = 22,
+	ATH_ACKRATE		= 22,
+	ATH_INTMIT		= 23,
 };
 
 static int
@@ -9441,6 +9451,14 @@ ATH_SYSCTL_DECL(ath_sysctl_halparam, ctl, write, filp, buffer, lenp, ppos)
 				sc->sc_ackrate = val;
 				ath_set_ack_bitrate(sc, sc->sc_ackrate);
 				break;
+			case ATH_INTMIT:
+				sc->sc_useintmit = val;
+				ath_hal_setintmit(ah, val ? 1 : 0);
+				if (sc->sc_dev != NULL &&
+				    sc->sc_dev->flags & IFF_RUNNING &&
+				    !sc->sc_invalid)
+					ath_reset(sc->sc_dev);
+				break;
 			default:
 				return -EINVAL;
 			}
@@ -9499,6 +9517,9 @@ ATH_SYSCTL_DECL(ath_sysctl_halparam, ctl, write, filp, buffer, lenp, ppos)
 #endif
 		case ATH_ACKRATE:
 			val = sc->sc_ackrate;
+			break;
+		case ATH_INTMIT:
+			val = sc->sc_useintmit;
 			break;
 		default:
 			return -EINVAL;
@@ -9617,6 +9638,12 @@ static const ctl_table ath_sysctl_template[] = {
 	  .mode		= 0644,
 	  .proc_handler	= ath_sysctl_halparam,
 	  .extra2	= (void *)ATH_ACKRATE,
+	},
+	{ .ctl_name	= CTL_AUTO,
+	  .procname	= "intmit",
+	  .mode		= 0644,
+	  .proc_handler	= ath_sysctl_halparam,
+	  .extra2	= (void *)ATH_INTMIT,
 	},
 	{ 0 }
 };
