@@ -1085,7 +1085,7 @@ ath_vap_create(struct ieee80211com *ic, const char *name, int unit,
 	 * Change the interface type for monitor mode.
 	 */
 	if (opmode == IEEE80211_M_MONITOR)
-		dev->type = ARPHRD_IEEE80211_PRISM;
+		dev->type = ARPHRD_IEEE80211_RADIOTAP;
 	if ((flags & IEEE80211_CLONE_BSSID) &&
 	    sc->sc_nvaps != 0 && opmode != IEEE80211_M_WDS && sc->sc_hasbmask) {
 		struct ieee80211vap *v;
