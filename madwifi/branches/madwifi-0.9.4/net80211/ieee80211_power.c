@@ -338,13 +338,13 @@ ieee80211_sta_pwrsave(struct ieee80211vap *vap, int enable)
 	struct ieee80211_node *ni = vap->iv_bss;
 	int qlen;
 
-	if (!((enable != 0) ^ ((ni->ni_flags & IEEE80211_NODE_PWR_MGT) != 0)))
+	if (!!enable == !!IEEE80211_VAP_IS_SLEEPING(vap)) /* Bool. normalise */
 		return;
 
 	IEEE80211_NOTE(vap, IEEE80211_MSG_POWER, ni,
 		"sta power save mode %s", enable ? "on" : "off");
 	if (!enable) {
-		ni->ni_flags &= ~IEEE80211_NODE_PWR_MGT;
+		IEEE80211_VAP_WAKEUP(vap);
 		ieee80211_send_nulldata(ieee80211_ref_node(ni));
 		/*
 		 * Flush any queued frames; we can do this immediately
@@ -368,7 +368,7 @@ ieee80211_sta_pwrsave(struct ieee80211vap *vap, int enable)
 			}
 		}
 	} else {
-		ni->ni_flags |= IEEE80211_NODE_PWR_MGT;
+		IEEE80211_VAP_GOTOSLEEP(vap);
 		ieee80211_send_nulldata(ieee80211_ref_node(ni));
 	}
 }

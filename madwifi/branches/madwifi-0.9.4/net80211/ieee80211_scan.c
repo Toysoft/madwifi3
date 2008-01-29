@@ -323,7 +323,7 @@ scan_restart(struct scan_state *ss, u_int duration)
 	}
 	if (vap->iv_opmode == IEEE80211_M_STA &&
 	    vap->iv_state == IEEE80211_S_RUN) {
-		if ((vap->iv_bss->ni_flags & IEEE80211_NODE_PWR_MGT) == 0) {
+		if (!IEEE80211_VAP_IS_SLEEPING(vap)) {
 			/*
 			 * Initiate power save before going off-channel.
 			 * Note that we cannot do this directly because
