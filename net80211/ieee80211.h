@@ -358,7 +358,7 @@ enum CountryCode {
 struct ieee80211_ie {
 	u_int8_t id;
 	u_int8_t len;
-	u_int8_t info[];
+	u_int8_t info[0];
 } __packed;
 
 /* 

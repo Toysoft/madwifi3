@@ -634,7 +634,7 @@ enum {
 struct ieee80211req_getset_appiebuf {
 	u_int32_t	app_frmtype;		/* management frame type for which buffer is added */
 	u_int32_t	app_buflen;		/* application-supplied buffer length */
-	u_int8_t	app_buf[];		/* application-supplied IE(s) */
+	u_int8_t	app_buf[0];		/* application-supplied IE(s) */
 };
 
 /* Flags ORed by application to set filter for receiving management frames */
