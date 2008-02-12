@@ -412,8 +412,9 @@ ath_attach(u_int16_t devid, struct net_device *dev, HAL_BUS_TAG tag)
 	DPRINTF(sc, ATH_DEBUG_ANY, "%s: devid 0x%x\n", __func__, devid);
 
 	/* Allocate space for dynamically determined maximum VAP count */
-	sc->sc_bslot = kmalloc(ath_maxvaps * sizeof(struct ieee80211vap, GFP_KERNEL);
+	sc->sc_bslot = kmalloc(ath_maxvaps * sizeof(struct ieee80211vap), GFP_KERNEL);
 	memset(sc->sc_bslot, 0, ath_maxvaps * sizeof(struct ieee80211vap));
+
 	/*
 	 * Cache line size is used to size and align various
 	 * structures used to communicate with the hardware.
@@ -2591,6 +2592,7 @@ ath_hardstart(struct sk_buff *skb, struct net_device *dev)
 		return NETDEV_TX_OK;
 	}
 
+	eh = (struct ether_header *)skb->data;
 	ni = cb->ni;		/* NB: always passed down by 802.11 layer */
 	if (ni == NULL) {
 		/* NB: this happens if someone marks the underlying device up */
