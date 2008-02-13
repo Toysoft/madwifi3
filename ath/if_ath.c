@@ -2600,10 +2600,9 @@ ath_hardstart(struct sk_buff *skb, struct net_device *dev)
 			"%s: discard, no node in cb\n", __func__);
 		goto hardstart_fail;
 	}
-	
+
 	vap = ni->ni_vap;
-	
-	
+
 #ifdef ATH_SUPERG_FF
 	if (M_FLAG_GET(skb, M_UAPSD)) {
 		/* bypass FF handling */
