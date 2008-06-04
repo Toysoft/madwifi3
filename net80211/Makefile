@@ -39,10 +39,7 @@
 #
 # Makefile for the 802.11 WLAN modules.
 #
-ifeq ($(obj),)
-obj=	.
-endif
-
+obj := $(firstword $(obj) $(SUBDIRS) .)
 TOP = $(obj)/..
 #
 # There are two authenticator mechanisms: an in-kernel implementation
