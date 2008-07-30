@@ -81,6 +81,15 @@ struct ath_pci_softc {
 };
 
 /*
+ * Module glue.
+ */
+#include "release.h"
+static char *version = RELEASE_VERSION;
+static char *dev_info = "ath_pci";
+
+#include <linux/ethtool.h>
+
+/*
  * User a static table of PCI id's for now.  While this is the
  * "new way" to do things, we may want to switch back to having
  * the HAL check them by defining a probe method.
@@ -178,6 +187,25 @@ ath_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 		printk(KERN_ERR "ath_pci: cannot remap PCI memory region\n") ;
 		goto bad1;
 	}
+
+/*
+ * Reject new MAC revisions if HAL doesn't support AR2425.  Ideally, it could
+ * be done in the PCI ID table, but AR2424 and AR2425 share the same vendor ID
+ * 168c:001c.
+ */
+#ifndef AH_SUPPORT_2425
+#define AR5K_SREV		0x4020	/* MAC revision */
+#define AR5K_SREV_CUTOFF	0xE0	/* Cutoff revision */
+	{
+		u_int32_t mac_rev = readl(mem + AR5K_SREV);
+		if (mac_rev > AR5K_SREV_CUTOFF)
+		{
+			printk(KERN_ERR "%s: HAL doesn't support MAC revision "
+			       "0x%02x\n", dev_info, mac_rev);
+			goto bad2;
+		}
+	}
+#endif
 
 	dev = alloc_netdev(sizeof(struct ath_pci_softc), "wifi%d", ether_setup);
 	if (dev == NULL) {
@@ -336,15 +364,6 @@ static struct pci_driver ath_pci_driver = {
 #endif /* CONFIG_PM */
 	/* Linux 2.4.6 has save_state and enable_wake that are not used here */
 };
-
-/*
- * Module glue.
- */
-#include "release.h"
-static char *version = RELEASE_VERSION;
-static char *dev_info = "ath_pci";
-
-#include <linux/ethtool.h>
 
 int
 ath_ioctl_ethtool(struct ath_softc *sc, int cmd, void __user *addr)
