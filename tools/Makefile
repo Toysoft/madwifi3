@@ -82,6 +82,7 @@ install: $(ALL)
 	done
 	install -d $(DESTDIR)$(MANDIR)/man8
 	install -m 0644 man/*.8 $(DESTDIR)$(MANDIR)/man8
+	install $(TOP)/scripts/madwifi-unload $(DESTDIR)$(BINDIR)/madwifi-unload
 
 uninstall:
 	for i in $(ALL); do \

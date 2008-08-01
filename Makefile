@@ -137,6 +137,10 @@ sanitycheck:
 release:
 	sh scripts/make-release.bash
 
+.PHONY: unload
+unload:
+	bash scripts/madwifi-unload
+
 configcheck: sanitycheck
 	@echo -n "Checking kernel configuration... "
 	
