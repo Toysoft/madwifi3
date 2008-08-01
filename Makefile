@@ -49,6 +49,10 @@ endif
 
 obj-y := ath/ ath_hal/ ath_rate/ net80211/
 
+ifdef CRYPTO_TESTING
+obj-y += regression/
+endif
+
 all: modules tools
 
 modules: configcheck svnversion.h
