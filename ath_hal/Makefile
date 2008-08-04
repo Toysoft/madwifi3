@@ -103,7 +103,7 @@ endif
 
 install:
 	test -d $(DESTDIR)/$(KMODPATH) || mkdir -p $(DESTDIR)/$(KMODPATH)
-	install ath_hal.$(KMODSUF) $(DESTDIR)/$(KMODPATH)
+	install -m 0644 ath_hal.$(KMODSUF) $(DESTDIR)/$(KMODPATH)
 
 clean:
 	rm -f *~ *.o *.ko *.mod.c uudecode .*.cmd
