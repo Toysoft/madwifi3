@@ -394,6 +394,12 @@ ath_rate_setupxtxdesc(struct ath_softc *sc, struct ath_node *an,
 	int rc1, rc2, rc3;         /* Index into the rate table, so for example, it is  0..11 */
 	int rixc1, rixc2, rixc3;   /* The actual bit rate used */
 
+	if (sn->num_rates <= 0) {
+		DPRINTF(sc, "%s: no rates for %s\n", dev_info,
+			ether_sprintf(an->an_node.ni_macaddr));
+		return;
+	}
+
 	if (sn->is_sampling) {
 		sn->is_sampling = 0;
 		if (sn->rs_sample_rate_slower)
