@@ -118,6 +118,18 @@
 #ifdef __KERNEL__
 
 #include <linux/version.h>
+#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,14)
+typedef int gfp_t;
+
+static inline void *kzalloc(size_t size, gfp_t flags)
+{
+	void *p = kmalloc(size, flags);
+	if (likely(p != NULL))
+		memset(p, 0, size);
+	return p;
+}
+#endif
+
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,21)
 #define ATH_REGISTER_SYSCTL_TABLE(t) register_sysctl_table(t, 1)
 #else
