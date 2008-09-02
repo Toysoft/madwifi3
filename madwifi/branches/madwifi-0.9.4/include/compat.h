@@ -41,7 +41,14 @@
 /* Compatibility with older Linux kernels */
 #ifdef __KERNEL__
 #include <linux/types.h>
+#include <linux/time.h>
+#include <linux/netdevice.h>
+#include <linux/kernel.h>
+#include <linux/kmod.h>
 #endif
+
+#include <linux/version.h>
+
 #if !defined(__KERNEL__) || !defined (__bitwise)
 #define __le16 u_int16_t
 #define __le32 u_int32_t
@@ -65,7 +72,6 @@
 #define	NBBY	8			/* number of bits/byte */
 
 /* roundup() appears in Linux 2.6.18 */
-#include <linux/kernel.h>
 #ifndef roundup
 #define	roundup(x, y)	((((x)+((y)-1))/(y))*(y))  /* to any y */ 
 #endif
@@ -117,7 +123,6 @@
  */
 #ifdef __KERNEL__
 
-#include <linux/version.h>
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,14)
 typedef int gfp_t;
 
@@ -147,7 +152,6 @@ static inline void *kzalloc(size_t size, gfp_t flags)
 #endif
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,22)
-#include <linux/skbuff.h>
 #define skb_end_pointer(_skb) ((_skb)->end)
 #define skb_tail_pointer(_skb) ((_skb)->tail)
 #define skb_set_network_header(_skb, _offset) \
