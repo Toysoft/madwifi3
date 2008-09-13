@@ -3314,8 +3314,16 @@ ieee80211_ioctl_setmlme(struct net_device *dev, struct iw_request_info *info,
 	struct ieee80211req_mlme *mlme = (struct ieee80211req_mlme *)extra;
 	struct ieee80211_node *ni;
 
-	if (!IS_UP(dev))
-		return -EINVAL;
+	if (!IS_UP(dev)) {
+		switch (mlme->im_op) {
+		case IEEE80211_MLME_DISASSOC:
+		case IEEE80211_MLME_DEAUTH:
+		case IEEE80211_MLME_UNAUTHORIZE:
+			return 0;
+		default:
+			return -ENETDOWN;
+		}
+	}
 	switch (mlme->im_op) {
 	case IEEE80211_MLME_ASSOC:
 		if (vap->iv_opmode == IEEE80211_M_STA) {
