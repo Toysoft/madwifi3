@@ -180,6 +180,10 @@ static inline void *_kzalloc(size_t size, gfp_t flags)
 #define __skb_queue_after(_list, _old, _new)	__skb_append(_old, _new, _list)
 #endif
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,0)
+#define request_module(_fmt, _modname) request_module(_modname)
+#endif
+
 #endif /* __KERNEL__ */
 
 #endif /* _ATH_COMPAT_H_ */
