@@ -153,6 +153,10 @@ static inline void *_kzalloc(size_t size, gfp_t flags)
 #define IRQF_SHARED SA_SHIRQ
 #endif
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(2,4,27)
+#define netdev_priv(_netdev) ((_netdev)->priv)
+#endif
+
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,22)
 #define skb_end_pointer(_skb) ((_skb)->end)
 #define skb_tail_pointer(_skb) ((_skb)->tail)
