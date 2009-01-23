@@ -3838,7 +3838,7 @@ get_scan_result(void *arg, const struct ieee80211_scan_entry *se)
 
 	len = scan_space(se, &ielen);
 	if (len > req->space) {
-	  printk("[madwifi] %s() : Not enough space.\n", __FUNCTION__);
+	  printk("[madwifi] %s() : Not enough space.\n", __func__);
 		return 0;
 	}
 
