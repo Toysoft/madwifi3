@@ -978,8 +978,8 @@ ath_proc_read_nodes(struct ieee80211vap *vap, char *buf, int space)
 				     this_prob / 10, this_prob % 10,
 				     odst->rs_lastratesuccess[x],
 				     odst->rs_lastrateattempts[x],
-				     odst->rs_succ_hist[x],
-				     odst->rs_att_hist[x]);
+				     (unsigned long long)odst->rs_succ_hist[x],
+				     (unsigned long long)odst->rs_att_hist[x]);
 		}
 		p += sprintf(p, "\n");
 
