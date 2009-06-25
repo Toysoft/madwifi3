@@ -137,7 +137,7 @@ __skb_queue_drain(struct sk_buff_head *q)
 /*
  * Register a vlan group.
  */
-static void
+void
 ieee80211_vlan_register(struct net_device *dev, struct vlan_group *grp)
 {
 	struct ieee80211vap *vap = netdev_priv(dev);
@@ -148,7 +148,7 @@ ieee80211_vlan_register(struct net_device *dev, struct vlan_group *grp)
 /*
  * Add an rx vlan identifier
  */
-static void
+void
 ieee80211_vlan_add_vid(struct net_device *dev, unsigned short vid)
 {
 	struct ieee80211vap *vap = netdev_priv(dev);
@@ -160,7 +160,7 @@ ieee80211_vlan_add_vid(struct net_device *dev, unsigned short vid)
 /*
  * Kill (i.e. delete) a vlan identifier.
  */
-static void
+void
 ieee80211_vlan_kill_vid(struct net_device *dev, unsigned short vid)
 {
 	struct ieee80211vap *vap = netdev_priv(dev);
@@ -178,9 +178,6 @@ ieee80211_vlan_vattach(struct ieee80211vap *vap)
 
 	dev->features |= NETIF_F_HW_VLAN_TX | NETIF_F_HW_VLAN_RX |
 			 NETIF_F_HW_VLAN_FILTER;
-	dev->vlan_rx_register = ieee80211_vlan_register;
-	dev->vlan_rx_add_vid = ieee80211_vlan_add_vid;
-	dev->vlan_rx_kill_vid = ieee80211_vlan_kill_vid;
 #endif /* IEEE80211_VLAN_TAG_USED */
 }
 
