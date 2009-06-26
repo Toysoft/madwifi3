@@ -145,10 +145,11 @@ extern	u_int32_t __ahdecl ath_hal_getuptime(struct ath_hal *);
  */
 
 #if (AH_BYTE_ORDER == AH_BIG_ENDIAN)
-#define _OS_REG_WRITE(_ah, _reg, _val) do {				\
-	(0x4000 <= (_reg) && (_reg) < 0x5000) ?				\
-	 writel((_val), (_ah)->ah_sh + (_reg)) :	\
-	 __raw_writel((_val), (_ah)->ah_sh + (_reg));	\
+#define _OS_REG_WRITE(_ah, _reg, _val) do {			\
+	if (0x4000 <= (_reg) && (_reg) < 0x5000)		\
+	 writel((_val), (_ah)->ah_sh + (_reg));			\
+	else							\
+	 __raw_writel((_val), (_ah)->ah_sh + (_reg));		\
 } while (0)
 #define _OS_REG_READ(_ah, _reg)					\
 	((0x4000 <= (_reg) && (_reg) < 0x5000) ?		\
