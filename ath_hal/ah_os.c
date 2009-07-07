@@ -109,7 +109,7 @@ ath_hal_detach(struct ath_hal *ah)
 void __ahdecl
 ath_hal_vprintf(struct ath_hal *ah, const char* fmt, va_list ap)
 {
-	char buf[1024];					/* XXX */
+	char buf[256];					/* XXX */
 	vsnprintf(buf, sizeof(buf), fmt, ap);
 	printk("%s", buf);
 }
