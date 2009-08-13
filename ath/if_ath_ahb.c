@@ -309,7 +309,14 @@ init_ath_wmac(u_int16_t devid, u_int16_t wlanNum, struct ar531x_config *config)
 	const char *athname;
 	struct net_device *dev;
 	struct ath_ahb_softc *sc;
-        
+
+#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,19)
+	config->board = ar5312_boardConfig;
+	config->radio = radioConfig;
+	config->unit = wlanNum;
+	config->tag = NULL;
+#endif
+
 	if (((wlanNum != 0) && (wlanNum != 1)) ||
 		(sclist[wlanNum] != NULL))
 		goto bad;
@@ -428,11 +435,6 @@ init_ahb(void)
 	   correct number of macs */
 	if (!ar5312SetupFlash())
 		return -ENODEV;
-
-	config.board = ar5312_boardConfig;
-	config.radio = radioConfig;
-	config.unit = wlanNum;
-	config.tag = NULL;
 
 	if (!strcmp(sysType,"Atheros AR5315")) {
 		devid = (u_int16_t) (sysRegRead(AR5315_SREV) &
