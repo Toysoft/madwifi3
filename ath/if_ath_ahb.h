@@ -102,7 +102,7 @@
 
 #define AR531X_BD_MAGIC 0x35333131   /* "5311", for all 531x platforms */
 
-#ifndef __mips__
+#if !defined(__mips__) && !defined(dma_cache_wback_inv)
 #define dma_cache_wback_inv(start,size)	\
 	do { (void) (start); (void) (size); } while (0)
 #endif
