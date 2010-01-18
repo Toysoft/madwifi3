@@ -743,6 +743,11 @@ typedef void (*ath_callback) (struct ath_softc *);
 	spin_unlock_irqrestore(&(_sc)->sc_rxbuflock, __rxbuflockflags);
 
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,26)
+#include <linux/semaphore.h>
+#else
+#include <asm/semaphore.h>
+#endif
 /* Protects the device from concurrent accesses */
 #define	ATH_LOCK_INIT(_sc)		init_MUTEX(&(_sc)->sc_lock)
 #define	ATH_LOCK_DESTROY(_sc)
