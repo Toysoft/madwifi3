@@ -55,7 +55,7 @@ endif
 
 all: modules tools
 
-modules: configcheck svnversion.h
+modules: configcheck $(TOP)/svnversion.h
 ifdef LINUX24
 	for i in $(obj-y); do \
 		$(MAKE) -C $$i || exit 1; \
@@ -64,17 +64,22 @@ else
 	$(MAKE) -C $(KERNELPATH) SUBDIRS=$(shell pwd) modules
 endif
 
-.PHONY: svnversion.h
-svnversion.h:
-	@if [ -d .svn ]; then \
-		ver=`svnversion -nc . | sed -e 's/^[^:]*://;s/[A-Za-z]//'`; \
+$(addprefix $(obj)/, $(obj-y:/=)): $(TOP)/svnversion.h
+
+$(TOP)/svnversion.h:
+	@cd $(TOP) && \
+	if [ -d .svn ]; then \
+		ver=$$(svnversion -nc . | sed -e 's/^[^:]*://;s/[A-Za-z]//'); \
 		echo "#define SVNVERSION \"svn r$$ver\"" > $@.tmp; \
+	elif [ -d .git ]; then \
+		ver=$$(git svn log | head -n2 | tail -n1 | cut -d\  -f1); \
+		echo "#define SVNVERSION \"svn $$ver\"" > $@.tmp; \
 	elif [ -s SNAPSHOT ]; then \
-		ver=`sed -e '/^Revision: */!d;s///;q' SNAPSHOT`; \
+		ver=$$(sed -e '/^Revision: */!d;s///;q' SNAPSHOT); \
 		echo "#define SVNVERSION \"svn r$$ver\"" > $@.tmp; \
 	else \
 		touch $@.tmp; \
-	fi; \
+	fi || exit 1; \
 	diff $@ $@.tmp >/dev/null 2>&1 || cp -f $@.tmp $@; rm -f $@.tmp
 
 # conflicts with the 'tools' subdirectory
