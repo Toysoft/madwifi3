@@ -4190,15 +4190,19 @@ ath_beacon_generate(struct ath_softc *sc, struct ieee80211vap *vap, int *needmar
 		ATH_TXQ_LOCK(&avp->av_mcastq);
 		ATH_TXQ_LOCK(cabq);
 		bfmcast = STAILQ_FIRST(&avp->av_mcastq.axq_q);
-		/* link the descriptors */
-		if (cabq->axq_link == NULL)
-			ath_hal_puttxbuf(ah, cabq->axq_qnum, bfmcast->bf_daddr);
-		else {
+		if (bfmcast != NULL) {
+			/* link the descriptors */
+			if (cabq->axq_link == NULL)
+				ath_hal_puttxbuf(ah, cabq->axq_qnum,
+						 bfmcast->bf_daddr);
+			else {
 #ifdef AH_NEED_DESC_SWAP
-			*cabq->axq_link = cpu_to_le32(bfmcast->bf_daddr);
+				*cabq->axq_link =
+					cpu_to_le32(bfmcast->bf_daddr);
 #else
-			*cabq->axq_link = bfmcast->bf_daddr;
+				*cabq->axq_link = bfmcast->bf_daddr;
 #endif
+			}
 		}
 
 		/* Set the MORE_DATA bit for each packet except the last one */
