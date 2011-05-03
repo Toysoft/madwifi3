@@ -2494,7 +2494,6 @@ ath_ffstageq_flush(struct ath_softc *sc, struct ath_txq *txq,
 {
 	struct ath_buf *bf_ff = NULL;
 	struct ieee80211_node *ni = NULL;
-	int pktlen;
 	int framecnt;
 
 	for (;;) {
@@ -2523,7 +2522,6 @@ ath_ffstageq_flush(struct ath_softc *sc, struct ath_txq *txq,
 			sc->sc_stats.ast_tx_encap++;
 			goto bad;
 		}
-		pktlen = bf_ff->bf_skb->len;	/* NB: don't reference skb below */
 		if (ath_tx_start(sc->sc_dev, ni, bf_ff, bf_ff->bf_skb, 0) == 0)
 			continue;
 	bad:
@@ -2585,7 +2583,6 @@ ath_hardstart(struct sk_buff *skb, struct net_device *dev)
 	int framecnt;
 	int requeue = 0;
 #ifdef ATH_SUPERG_FF
-	int pktlen;
 	struct ieee80211com *ic = &sc->sc_ic;
 	struct ath_node *an;
 	struct ath_txq *txq = NULL;
@@ -2720,7 +2717,6 @@ ath_hardstart(struct sk_buff *skb, struct net_device *dev)
 				sc->sc_stats.ast_tx_encap++;
 				goto ff_flushbad;
 			}
-			pktlen = bf_ff->bf_skb->len;	/* NB: don't reference skb below */
 			/* NB: ath_tx_start() will use ATH_TXBUF_LOCK_BH(). The _BH
 			 *     portion is not needed here since we're running at
 			 *     interrupt time, but should be harmless.
@@ -3758,7 +3754,6 @@ ath_check_beacon_done(struct ath_softc *sc)
 	struct ieee80211vap *vap=NULL;
 	struct ath_vap *avp;
 	struct ath_buf *bf;
-	struct sk_buff *skb;
 	struct ath_desc *ds;
 	struct ath_hal *ah = sc->sc_ah;
 	int slot;
@@ -3776,7 +3771,6 @@ ath_check_beacon_done(struct ath_softc *sc)
 		 return 0;
 	avp = ATH_VAP(vap);
 	bf = avp->av_bcbuf;
-	skb = bf->bf_skb;
 	ds = bf->bf_desc;
 
 	return (ath_hal_txprocdesc(ah, ds) != HAL_EINPROGRESS);

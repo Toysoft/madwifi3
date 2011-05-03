@@ -5322,7 +5322,6 @@ int
 ieee80211_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
 {
 	struct ieee80211vap *vap = netdev_priv(dev);
-	u_int unit;
 
 	switch (cmd) {
 	case SIOCG80211STATS:
@@ -5332,7 +5331,6 @@ ieee80211_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
 		if (!capable(CAP_NET_ADMIN))
 			return -EPERM;
 		ieee80211_stop(vap->iv_dev);	/* force state before cleanup */
-		unit = vap->iv_unit;
 		vap->iv_ic->ic_vap_delete(vap);
 		return 0;
 	case IEEE80211_IOCTL_GETKEY:
