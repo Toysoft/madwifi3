@@ -7396,7 +7396,7 @@ ath_tx_processq(struct ath_softc *sc, struct ath_txq *txq)
 			 *     this is a DEAUTH message that was sent and the
 			 *     node was timed out due to inactivity.
 			 */
-			 ieee80211_free_node(ni); 
+			ieee80211_free_node(ni);
 		}
 
 		bus_unmap_single(sc->sc_bdev, bf->bf_skbaddr, 
