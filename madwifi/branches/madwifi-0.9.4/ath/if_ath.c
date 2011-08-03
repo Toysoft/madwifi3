@@ -4723,12 +4723,11 @@ ath_descdma_setup(struct ath_softc *sc,
 
 	/* allocate buffers */
 	bsize = sizeof(struct ath_buf) * nbuf;
-	bf = kmalloc(bsize, GFP_KERNEL);
+	bf = kzalloc(bsize, GFP_KERNEL);
 	if (bf == NULL) {
 		error = -ENOMEM;		/* XXX different code */
 		goto fail2;
 	}
-	memset(bf, 0, bsize);
 	dd->dd_bufptr = bf;
 
 	STAILQ_INIT(head);
@@ -4837,10 +4836,9 @@ ath_node_alloc(struct ieee80211_node_table *nt,struct ieee80211vap *vap)
 	const size_t space = sizeof(struct ath_node) + sc->sc_rc->arc_space;
 	struct ath_node *an;
 
-	an = kmalloc(space, GFP_ATOMIC);
+	an = kzalloc(space, GFP_ATOMIC);
 	if (an == NULL)
 		return NULL;
-	memset(an, 0, space);
 	an->an_decomp_index = INVALID_DECOMP_INDEX;
 	an->an_avgrssi = ATH_RSSI_DUMMY_MARKER;
 	an->an_halstats.ns_avgbrssi = ATH_RSSI_DUMMY_MARKER;
