@@ -9700,7 +9700,7 @@ static const ctl_table ath_sysctl_template[] = {
 	  .proc_handler	= ath_sysctl_halparam,
 	  .extra2	= (void *)ATH_INTMIT,
 	},
-	{ 0 }
+	{ }
 };
 
 static void
@@ -9885,21 +9885,21 @@ static ctl_table ath_static_sysctls[] = {
 	  .extra2	= &maxint,
 	  .proc_handler	= proc_dointvec_minmax
 	},
-	{ 0 }
+	{ }
 };
 static ctl_table ath_ath_table[] = {
 	{ ATH_INIT_CTL_NAME(DEV_ATH)
 	  .procname	= "ath",
 	  .mode		= 0555,
 	  .child	= ath_static_sysctls
-	}, { 0 }
+	}, { }
 };
 static ctl_table ath_root_table[] = {
 	{ ATH_INIT_CTL_NAME(CTL_DEV)
 	  .procname	= "dev",
 	  .mode		= 0555,
 	  .child	= ath_ath_table
-	}, { 0 }
+	}, { }
 };
 static struct ctl_table_header *ath_sysctl_header;
 
