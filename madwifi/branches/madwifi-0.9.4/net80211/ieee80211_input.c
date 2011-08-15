@@ -1133,10 +1133,12 @@ ieee80211_deliver_data(struct ieee80211_node *ni, struct sk_buff *skb)
 #else
 		skb->protocol = eth_type_trans(skb, dev);
 #endif
+#if IEEE80211_VLAN_TAG_USED
 		if (ni->ni_vlan != 0 && vap->iv_vlgrp != NULL) {
 			/* attach vlan tag */
 			vlan_hwaccel_receive_skb(skb, vap->iv_vlgrp, ni->ni_vlan);
 		} else
+#endif
 			netif_rx(skb);
 		dev->last_rx = jiffies;
 	}
