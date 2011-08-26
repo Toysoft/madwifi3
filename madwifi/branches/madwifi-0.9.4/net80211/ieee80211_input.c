@@ -1015,7 +1015,7 @@ ieee80211_defrag(struct ieee80211_node *ni, struct sk_buff *skb, int hdrlen)
 		if (more_frag) {
 			if (skb_is_nonlinear(skb)) {
 				/*
-				 * We need a continous buffer to
+				 * We need a continuous buffer to
 				 * assemble fragments
 				 */
 				ni->ni_rxfrag = skb_copy(skb, GFP_ATOMIC);
@@ -2311,7 +2311,7 @@ ieee80211_doth_switch_channel(struct ieee80211vap *vap)
 	netif_stop_queue(ic->ic_dev);
 #endif
 
-	vap->iv_csa_jiffies = 0; /* supress "cancel" msg */
+	vap->iv_csa_jiffies = 0; /* suppress "cancel" msg */
 	ieee80211_doth_cancel_cs(vap);
 
 	ic->ic_prevchan = ic->ic_curchan;
