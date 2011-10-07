@@ -116,12 +116,6 @@ typedef void irqreturn_t;
 #define	SET_NETDEV_DEV(ndev, pdev)
 #endif
 
-#ifdef to_net_dev
-#define ATH_GET_NETDEV_DEV(ndev)	((ndev)->dev.parent)
-#else
-#define ATH_GET_NETDEV_DEV(ndev)	((ndev)->class_dev.dev)
-#endif
-
 #ifndef	NETDEV_TX_OK
 #define	NETDEV_TX_OK	0
 #define	NETDEV_TX_BUSY	1
